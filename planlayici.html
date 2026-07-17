@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akıllı Yangın Tespit Sistemi Planlayıcısı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-image: linear-gradient(rgba(240, 245, 240, 0.8), rgba(230, 240, 230, 0.9)), url('https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=2070&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .card { 
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 0.75rem; 
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .label { font-size: 0.875rem; font-weight: 500; color: #374151; cursor: help; }
+        .input, .select { 
+            width: 100%; 
+            padding: 0.5rem 0.75rem; 
+            border-radius: 0.375rem; 
+            border: 1px solid #d1d5db; 
+            background-color: #ffffff; 
+            color: #1f2937; 
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .input:focus, .select:focus {
+            outline: none;
+            border-color: #0d9488;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+        }
+        .stat-card { 
+            border: 1px solid #e5e7eb; 
+            padding: 1.25rem; 
+            border-radius: 0.5rem; 
+            text-align: center; 
+            background-color: rgba(255, 255, 255, 0.7);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+        .stat-value { font-size: 1.75rem; font-weight: 700; }
+        .stat-label { font-size: 0.85rem; color: #6b7280; margin-top: 0.25rem; }
+        .tab { 
+            padding: 0.75rem 1.25rem; 
+            cursor: pointer; 
+            border-bottom: 3px solid transparent; 
+            font-weight: 600; 
+            color: #4b5563; 
+            transition: all 0.2s; 
+        }
+        .tab.active { 
+            color: #0d9488;
+            border-color: #0d9488; 
+        }
+        .tab:hover { color: #0f766e; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        details > summary { cursor: pointer; font-weight: 600; color: #374151; }
+        .table-responsive { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+        .currency-card { 
+            border-radius: 0.5rem; 
+            padding: 1rem; 
+            text-align: center; 
+        }
+        .currency-value { font-size: 1.5rem; font-weight: 700; }
+        .currency-label { font-size: 0.9rem; font-weight: 500; }
+        #tooltip {
+            position: absolute; display: none; background-color: #1f2937; color: #ffffff;
+            padding: 8px 12px; border-radius: 6px; font-size: 0.8rem; max-width: 280px;
+            z-index: 1000; pointer-events: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            opacity: 0; transition: opacity 0.2s;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div id="tooltip"></div>
+    <div class="max-w-screen-2xl mx-auto">
+        <div class="flex items-center space-x-4 mb-6">
+            <div class="bg-teal-600 text-white p-3 rounded-lg shadow-md"><i data-lucide="shield-check"></i></div>
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-800">Akıllı Yangın Tespit Sistemi Planlayıcısı</h1>
+                <p class="text-gray-600">Yapay zeka destekli erken uyarı ve müdahale sistemleri için fizibilite aracı.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8">
+            <div class="relative h-40 rounded-lg overflow-hidden shadow-lg group"><img src="https://images.unsplash.com/photo-1473448912268-2022ce9509d8?q=80&w=2041&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Yemyeşil orman patikası"><div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center"><h3 class="text-white text-2xl font-bold">Doğa</h3></div></div>
+            <div class="relative h-40 rounded-lg overflow-hidden shadow-lg group"><img src="https://images.unsplash.com/photo-1431794062232-2a99a5431c6c?q=80&w=2070&auto=format&fit=crop" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Ormandaki su kaynağı"><div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center"><h3 class="text-white text-2xl font-bold">Kaynak</h3></div></div>
+            <div class="relative h-40 rounded-lg overflow-hidden shadow-lg group"><img src="https://haberler.tvd.org.tr/wp-content/uploads/2021/07/elk_orman-yangini_john-mccolgan-1068x660.jpg" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" alt="Gece orman yangını"><div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center"><h3 class="text-white text-2xl font-bold">Tehdit</h3></div></div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            <div class="lg:col-span-2">
+                <div class="card p-6 sticky top-8">
+                    <div class="border-b border-gray-200 mb-4">
+                        <nav class="-mb-px flex space-x-2 sm:space-x-4 text-sm sm:text-base" id="config-tabs">
+                            <button class="tab active" data-tab="proje">1. Proje</button>
+                            <button class="tab" data-tab="altyapi">2. Altyapı</button>
+                            <button class="tab" data-tab="finans">3. Finansal</button>
+                            <button class="tab" data-tab="gelismis">4. Gelişmiş</button>
+                        </nav>
+                    </div>
+
+                    <div id="proje-content" class="tab-content active space-y-4">
+                        <details open class="space-y-3 p-3 bg-gray-50/50 rounded-md">
+                            <summary>Temel Parametreler</summary>
+                             <div class="pt-2">
+                                <label for="areaSize" class="label flex justify-between" data-tooltip="Korunacak toplam ormanlık veya yeşil alanın hektar cinsinden büyüklüğü.">Arazi Büyüklüğü (Hektar) <span id="areaValue" class="font-bold text-teal-700">500 ha</span></label>
+                                <input type="range" id="areaSize" min="10" max="10000" value="500" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer mt-2 accent-teal-600">
+                            </div>
+                            <div>
+                                <label for="areaType" class="label" data-tooltip="Projenin uygulanacağı arazinin tipini ve buna bağlı olarak sistemin temel davranış modelini seçin.">Arazi Tipi / Model</label>
+                                <select id="areaType" class="select mt-1"><option value="3-A">3-A: Parklar / Belediyeler</option><option value="3-B">3-B: Milli Parklar</option><option value="4-A">4-A: Kent Ormanı</option><option value="4-B">4-B: Korular</option><option value="5-A">5-A: Küçük Ormanlık Alan</option><option value="5-B" selected>5-B: Büyük Ormanlık Alan</option></select>
+                            </div>
+                            <div>
+                                <label for="modelVariant" class="label" data-tooltip="Sistemde kullanılacak donanım ve altyapının maliyet/performans dengesi. 'Ekonomik' bütçe odaklı, 'Performans' en üst düzey algılama yeteneği sunar.">Sistem Konfigürasyonu</label>
+                                <select id="modelVariant" class="select mt-1"><option value="Ekonomik">Ekonomik</option><option value="Denge" selected>Dengeli</option><option value="Performans">Performans</option></select>
+                            </div>
+                        </details>
+                         <details class="space-y-3 p-3 bg-gray-50/50 rounded-md">
+                            <summary>Coğrafya ve Çevre</summary>
+                             <div class="grid grid-cols-2 gap-4 pt-2">
+                                <div>
+                                    <label for="terrainDifficulty" class="label" data-tooltip="Arazinin coğrafi yapısı (düz, engebeli, dağlık). Zorlu araziler, kurulum süresini ve işçilik maliyetlerini artırır.">Arazi Zorluğu</label>
+                                    <select id="terrainDifficulty" class="select mt-1"><option value="1.0">Kolay</option><option value="1.25" selected>Orta</option><option value="1.5">Zor</option></select>
+                                </div>
+                                <div>
+                                    <label for="sunHours" class="label" data-tooltip="Proje bölgesindeki en kötü senaryodaki (örn. kış aylarında) günlük ortalama güneşlenme süresi. Güneş paneli ve batarya kapasitesini doğrudan etkiler.">Güneşlenme (saat)</label>
+                                    <input type="number" id="sunHours" value="3.5" step="0.1" class="input mt-1">
+                                </div>
+                             </div>
+                        </details>
+                    </div>
+
+                    <div id="altyapi-content" class="tab-content space-y-4">
+                        <details open class="space-y-3 p-3 bg-gray-50/50 rounded-md">
+                            <summary>Elektrik Altyapısı</summary>
+                            <div class="pt-2"><label class="label" data-tooltip="Sistemin enerji ihtiyacının nasıl karşılanacağını seçin. 'PV+Batarya' bağımsız bir sistemdir, 'Şebeke' mevcut elektrik hattını kullanır.">Besleme Kaynağı</label><select id="powerSource" class="select mt-1"><option value="pv_battery">PV + Batarya</option><option value="grid">Şebeke</option><option value="generator">Jeneratör</option></select></div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div id="distanceToGridContainer"><label for="distanceToGrid" class="label" data-tooltip="Enerji şebekeye bağlanacaksa, en yakın bağlantı noktasına olan uzaklık. Bu, hat çekme maliyetini belirler.">Uzaklık (km)</label><input type="number" id="distanceToGrid" value="5" class="input mt-1"></div>
+                                <div id="gridMaintenanceContainer"><label for="gridMaintenanceFee" class="label" data-tooltip="Şebeke bağlantısı için varsayılan yıllık abonelik, bakım ve sabit giderler toplamı.">Yıllık Bakım Ücreti</label><input type="number" id="gridMaintenanceFee" value="500" class="input mt-1"></div>
+                                
+                                <div class="col-span-2 space-y-2 p-2 border rounded-md">
+                                    <label class="label" data-tooltip="Farklı piyasa koşulları için PV panel sisteminin anahtar teslim kurulum maliyet senaryoları.">PV Maliyeti ($/kWp) [Min/Ort/Max]</label>
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <input type="number" id="costPerKwPv_min" value="750" class="input">
+                                        <input type="number" id="costPerKwPv_avg" value="900" class="input">
+                                        <input type="number" id="costPerKwPv_max" value="1100" class="input">
+                                    </div>
+                                </div>
+                                <div class="col-span-2 space-y-2 p-2 border rounded-md">
+                                    <label class="label" data-tooltip="Farklı piyasa koşulları için batarya depolama maliyet senaryoları.">Batarya Maliyeti ($/Ah-48V) [Min/Ort/Max]</label>
+                                    <div class="grid grid-cols-3 gap-2">
+                                        <input type="number" id="costPerAhBattery_min" value="2.0" step="0.1" class="input">
+                                        <input type="number" id="costPerAhBattery_avg" value="2.5" step="0.1" class="input">
+                                        <input type="number" id="costPerAhBattery_max" value="3.5" step="0.1" class="input">
+                                    </div>
+                                </div>
+
+                                <div id="generatorConsumptionContainer" class="col-span-2"><label for="generatorConsumptionRate" class="label" data-tooltip="Jeneratörün yük altındayken saatte harcadığı yakıt miktarı. (Litre / kVA-saat)">Tüketim (L/kVA·h)</label><input type="number" id="generatorConsumptionRate" value="0.2" step="0.05" class="input mt-1"></div>
+                                <div id="generatorRuntimeContainer" class="col-span-2"><label for="generatorDailyRuntime" class="label" data-tooltip="Jeneratörün bir günde ortalama çalışma süresi.">Çalışma (saat/gün)</label><input type="number" id="generatorDailyRuntime" value="8" class="input mt-1"></div>
+                            </div>
+                        </details>
+                        <details open class="space-y-3 p-3 bg-gray-50/50 rounded-md">
+                            <summary>Su Altyapısı</summary>
+                            <div class="pt-2"><label class="label" data-tooltip="Müdahale için kullanılacak suyun kaynağı. 'Kuyu' sondaj gerektirir, 'Tanker' taşıma maliyeti ekler.">Su Kaynağı</label><select id="waterSource" class="select mt-1"><option value="well">Kuyu</option><option value="tanker">Tanker</option><option value="grid_water">Şebeke</option></select></div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div><label for="drillingDepth" class="label" data-tooltip="Su kaynağı olarak kuyu seçildiyse, yapılması gereken sondajın metre cinsinden derinliği.">Sondaj (m)</label><input type="number" id="drillingDepth" value="80" class="input mt-1"></div>
+                                <div><label for="costPerMeterDrilling" class="label" data-tooltip="Sondaj işleminin metre başına maliyeti (işçilik ve malzeme dahil).">Sondaj ($/m)</label><input type="number" id="costPerMeterDrilling" value="150" class="input mt-1"></div>
+                                <div><label for="costPerTank" class="label" data-tooltip="Su depolama tanklarının metreküp başına kurulum maliyeti.">Depo ($/m³)</label><input type="number" id="costPerTank" value="250" class="input mt-1"></div>
+                            </div>
+                        </details>
+                         <details class="space-y-3 p-3 bg-gray-50/50 rounded-md">
+                            <summary>İşçilik ve Birim Maliyetler</summary>
+                             <div class="grid grid-cols-2 gap-4 pt-2">
+                                <div><label for="workerCount" class="label" data-tooltip="Projenin kurulum aşamasında çalışacak toplam personel sayısı.">Kurulum İşçi Sayısı</label><input type="number" id="workerCount" value="6" min="1" class="input mt-1"></div>
+                                <div><label for="maintenanceWorkerCount" class="label" data-tooltip="Sistemin işletme ve bakımı için sürekli olarak çalışacak personel sayısı.">Bakım Personeli</label><input type="number" id="maintenanceWorkerCount" value="2" min="0" class="input mt-1"></div>
+                                <div class="col-span-2"><label for="workerSalary" class="label" data-tooltip="Bir işçinin aylık brüt maaş ve yan haklar dahil toplam maliyeti. Bu değer, 'Varsayılan Gösterim Birimi' olarak seçilen para biriminde girilmelidir.">Aylık Maaş/İşçi</label><input type="number" id="workerSalary" value="1200" step="50" class="input mt-1"></div>
+                                <div><label for="gridTariff" class="label" data-tooltip="Enerji şebekeden sağlanıyorsa, bir kilovatsaat (kWh) elektriğin maliyeti.">Tarife ($/kWh)</label><input type="number" id="gridTariff" value="0.15" step="0.01" class="input mt-1"></div>
+                                <div><label for="dieselPrice" class="label" data-tooltip="Enerji jeneratörden sağlanıyorsa, bir litre dizel yakıtın maliyeti.">Yakıt ($/L)</label><input type="number" id="dieselPrice" value="1.2" step="0.01" class="input mt-1"></div>
+                             </div>
+                        </details>
+                    </div>
+                    
+                    <div id="finans-content" class="tab-content space-y-4">
+                        <details open class="space-y-3 p-3 bg-gray-50/50 rounded-md">
+                            <summary>Genel Maliyet Parametreleri</summary>
+                            <div class="grid grid-cols-2 gap-4 pt-2">
+                                <div><label for="engineeringPercentage" class="label" data-tooltip="Toplam yatırım maliyetinin yüzdesi olarak hesaplanan proje yönetimi, tasarım ve mühendislik hizmetleri bedeli.">Mühendislik (%)</label><input type="number" id="engineeringPercentage" value="8" class="input mt-1"></div>
+                                <div><label for="contingencyPercentage" class="label" data-tooltip="Proje sırasında ortaya çıkabilecek beklenmedik durumlar ve harcamalar için ayrılan bütçe payı.">Beklenmedik Gider (%)</label><input type="number" id="contingencyPercentage" value="15" class="input mt-1"></div>
+                                <div><label for="maintenancePercentage" class="label" data-tooltip="İlk yatırım maliyetinin (CAPEX) yüzdesi olarak yıllık periyodik bakım, onarım ve parça değişimi giderleri.">Yıllık Bakım (% CAPEX)</label><input type="number"id="maintenancePercentage" value="1.5" step="0.1" class="input mt-1"></div>
+                            </div>
+                        </details>
+                        <details open class="space-y-3 p-3 bg-gray-50/50 rounded-md">
+                            <summary>Ekonomik Analiz</summary>
+                            <div class="grid grid-cols-2 gap-4 pt-2">
+                                <div><label for="projectLifetime" class="label" data-tooltip="Sistemin ekonomik olarak verimli olmasının beklendiği toplam süre (yıl). Yaşam döngüsü maliyeti (LCC) bu süreye göre hesaplanır.">Proje Ömrü (Yıl)</label><input type="number" id="projectLifetime" value="20" class="input mt-1"></div>
+                                <div><label for="discountRate" class="label" data-tooltip="Gelecekteki nakit akışlarının bugünkü değerini hesaplamak için kullanılan oran. Enflasyon ve risk primini yansıtır.">İskonto Oranı (%)</label><input type="number" id="discountRate" value="8" class="input mt-1"></div>
+                            </div>
+                        </details>
+                        <details class="space-y-3 p-3 bg-gray-50/50 rounded-md">
+                            <summary>Para Birimi ve Kurlar</summary>
+                            <div class="grid grid-cols-2 gap-4 pt-2">
+                               <div><label for="usdToTry" class="label" data-tooltip="1 Amerikan Doları'nın Türk Lirası cinsinden değeri.">USD/TRY Kuru</label><input type="number" id="usdToTry" value="32.85" step="0.01" class="input mt-1"></div>
+                               <div><label for="usdToAzn" class="label" data-tooltip="1 Amerikan Doları'nın Azerbaycan Manatı cinsinden değeri.">USD/AZN Kuru</label><input type="number" id="usdToAzn" value="1.70" step="0.01" class="input mt-1"></div>
+                                <div class="col-span-2"><label for="displayCurrency" class="label" data-tooltip="Sonuçlar panelindeki maliyetlerin hangi para biriminde gösterileceğini seçin.">Varsayılan Gösterim Birimi</label><select id="displayCurrency" class="select mt-1"><option value="USD">USD</option><option value="TRY">TRY</option><option value="AZN">AZN</option></select></div>
+                            </div>
+                        </details>
+                    </div>
+                    
+                    <div id="gelismis-content" class="tab-content space-y-4">
+                        <details open class="space-y-3 p-3 bg-gray-50/50 rounded-md">
+                            <summary>Zamanlama Hedefleri (ms)</summary>
+                            <div class="grid grid-cols-2 gap-4 pt-2">
+                                <div><label for="detectionLatencyTargetMs" class="label" data-tooltip="Sistemin bir yangın olayını tespit etmesi için hedeflenen maksimum süre (milisaniye).">Algılama Gecikmesi</label><input type="number" id="detectionLatencyTargetMs" value="1500" class="input mt-1"></div>
+                                <div><label for="actuationLatencyTargetMs" class="label" data-tooltip="Tespit sonrası su püskürtme gibi fiziksel bir müdahalenin başlaması için hedeflenen maksimum süre (milisaniye).">Müdahale Gecikmesi</label><input type="number" id="actuationLatencyTargetMs" value="1000" class="input mt-1"></div>
+                                <div class="col-span-2"><label for="totalResponseTimeTargetMs" class="label" data-tooltip="Yangının ilk belirtisinden müdahalenin başlamasına kadar geçen toplam hedeflenen süre.">Toplam Müdahale Süresi</label><input type="number" id="totalResponseTimeTargetMs" value="3000" class="input mt-1"></div>
+                            </div>
+                        </details>
+                         <details class="space-y-3 p-3 bg-gray-50/50 rounded-md">
+                            <summary>Termal Kamera Özellikleri</summary>
+                            <div class="grid grid-cols-2 gap-4 pt-2">
+                                <div><label for="thermalCameraFrameRate" class="label" data-tooltip="Kameranın saniyede yakaladığı kare sayısı (FPS). Daha yüksek FPS, hareketli olayları daha iyi yakalar.">Kare Hızı (FPS)</label><input type="number" id="thermalCameraFrameRate" value="25" class="input mt-1"></div>
+                                <div><label for="thermalResolution" class="label" data-tooltip="Termal sensörün piksel çözünürlüğü. Yüksek çözünürlük, daha uzaktan daha küçük sıcaklık değişimlerini algılayabilir.">Çözünürlük</label><select id="thermalResolution" class="select mt-1"><option value="320x256">320x256</option><option value="640x512" selected>640x512</option></select></div>
+                                <div><label for="thermalDetectionThreshold" class="label" data-tooltip="Bir sıcaklık anomalisinin 'potensiyel tehdit' olarak kabul edilmesi için ortam sıcaklığından ne kadar yüksek olması gerektiği (°C).">Eşik Değer (°C)</label><input type="number" id="thermalDetectionThreshold" value="15" class="input mt-1"></div>
+                                <div><label for="thermalBlobMinArea" class="label" data-tooltip="Görüntüdeki sıcak bölgenin yangın olarak sınıflandırılması için sahip olması gereken minimum piksel alanı. Küçük kıvılcımları filtrelemeye yarar.">Min. Alan (px)</label><input type="number" id="thermalBlobMinArea" value="50" class="input mt-1"></div>
+                            </div>
+                        </details>
+                        <details class="space-y-3 p-3 bg-gray-50/50 rounded-md">
+                            <summary>Edge (Uç Birim) İşleme</summary>
+                            <div class="grid grid-cols-2 gap-4 pt-2">
+                                <div><label for="edgeInferenceMaxTimeMs" class="label" data-tooltip="Uç birimin (kamera direği) bir görüntü karesini işleyip bir karar (yangın var/yok) üretmesi için izin verilen maksimum süre. Düşük değerler daha hızlı donanım gerektirir.">Max Çıkarım Süresi (ms)</label><input type="number" id="edgeInferenceMaxTimeMs" value="500" class="input mt-1"></div>
+                                <div><label for="temporalConfirmationFrames" class="label" data-tooltip="Bir alarmın doğrulanması için ardışık olarak kaç video karesinde yangın tespit edilmesi gerektiğini belirtir. Yanlış alarmları azaltır.">Teyit Karesi (adet)</label><input type="number" id="temporalConfirmationFrames" value="3" class="input mt-1"></div>
+                                <div class="col-span-2"><label for="edgeProcessingEnabled" class="label" data-tooltip="Uç birimin, merkezi sunucuya sormadan otonom olarak müdahale kararı verip veremeyeceğini belirler. 'Aktif' olması daha hızlı tepki süresi sağlar.">Yerel Karar Verme</label><select id="edgeProcessingEnabled" class="select mt-1"><option value="true" selected>Aktif</option><option value="false">Pasif</option></select></div>
+                            </div>
+                        </details>
+                        <details class="space-y-3 p-3 bg-gray-50/50 rounded-md">
+                            <summary>Müdahale (Actuation) Sistemi</summary>
+                            <div class="grid grid-cols-2 gap-4 pt-2">
+                                 <div><label for="reserveWaterVolumeL" class="label" data-tooltip="Her bir müdahale direğinde acil durumlar için hazır bekletilen su miktarı.">Direk Su Rezervi (L)</label><input type="number" id="reserveWaterVolumeL" value="200" class="input mt-1"></div>
+                                 <div><label for="initialSprayDurationSec" class="label" data-tooltip="Yangın tespit edildiğinde, vananın ilk etapta ne kadar süreyle açık kalacağı.">İlk Sprey Süresi (sn)</label><input type="number" id="initialSprayDurationSec" value="5" class="input mt-1"></div>
+                                 <div><label for="solenoidResponseTimeMs" class="label" data-tooltip="Müdahale komutunu aldıktan sonra su vanasının tamamen açılmasına kadar geçen süre.">Solenoid Tepki (ms)</label><input type="number" id="solenoidResponseTimeMs" value="150" class="input mt-1"></div>
+                                 <div><label for="immediateActuationOnDetection" class="label" data-tooltip="Tespit yapıldığı anda merkezi onay beklemeden direğin otomatik olarak su püskürtmeye başlayıp başlamayacağı.">Anında Müdahale</label><select id="immediateActuationOnDetection" class="select mt-1"><option value="true" selected>Aktif</option><option value="false">Pasif</option></select></div>
+                            </div>
+                        </details>
+                        <details class="space-y-3 p-3 bg-gray-50/50 rounded-md">
+                            <summary>Güvenlik ve Raporlama</summary>
+                            <div class="grid grid-cols-2 gap-4 pt-2">
+                                <div><label for="falseAlarmProtection" class="label" data-tooltip="Sistemin, hayvan veya araç gibi yanlış hedefleri yangından ayırt etme yeteneğini etkinleştirir.">Yanlış Alarm Koruma</label><select id="falseAlarmProtection" class="select mt-1"><option value="true" selected>Aktif</option><option value="false">Pasif</option></select></div>
+                                <div><label for="manualOverrideStop" class="label" data-tooltip="Operatörlerin, devam eden bir otomatik müdahaleyi uzaktan durdurma imkanının olup olmadığı.">Manuel Durdurma</label><select id="manualOverrideStop" class="select mt-1"><option value="true" selected>Mevcut</option><option value="false">Mevcut Değil</option></select></div>
+                                <div><label for="failSafeMode" class="label" data-tooltip="Sistem enerjisiz kaldığında su vanalarının varsayılan olarak hangi konumda kalacağı (Açık/Kapalı).">Enerji Kesintisi Modu</label><select id="failSafeMode" class="select mt-1"><option value="close" selected>Vana Kapalı</option><option value="open">Vana Açık</option></select></div>
+                                <div><label for="logResponseTimes" class="label" data-tooltip="Sistemin, performans analizi için tüm tespit ve müdahale sürelerini kaydedip kaydetmeyeceği.">Zamanları Logla</label><select id="logResponseTimes" class="select mt-1"><option value="true" selected>Evet</option><option value="false">Hayır</option></select></div>
+                                <div class="col-span-2"><label for="alarmNotificationOnActuation" class="label" data-tooltip="Sistem otomatik bir müdahale başlattığında operatörlere anında alarm bildirimi gönderilip gönderilmeyeceği.">Müdahalede Bildirim</label><select id="alarmNotificationOnActuation" class="select mt-1"><option value="true" selected>Evet</option><option value="false">Hayır</option></select></div>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-3">
+                <div class="card p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold text-gray-700">Sonuçlar</h2>
+                        <div>
+                            <label for="scenarioSelector" class="text-sm font-medium text-gray-600 mr-2">Detay Görüntüleme:</label>
+                            <select id="scenarioSelector" class="select !w-auto text-sm py-1">
+                                <option value="avg" selected>Orta (Beklenen)</option>
+                                <option value="min">Minimum (İyimser)</option>
+                                <option value="max">Maksimum (Kötümser)</option>
+                            </select>
+                        </div>
+                    </div>
+                     <div class="border-b border-gray-200">
+                        <nav class="-mb-px flex flex-wrap text-sm sm:text-base" id="results-tabs">
+                            <button class="tab active" data-tab="finansal_ozet">Finansal Analiz</button>
+                            <button class="tab" data-tab="ozet">Proje Özeti</button>
+                            <button class="tab" data-tab="gunes">Güneş Analizi</button>
+                            <button class="tab" data-tab="senaryo">Saha Senaryoları</button>
+                            <button class="tab" data-tab="boq">Malzeme Listesi</button>
+                        </nav>
+                    </div>
+
+                    <div id="finansal_ozet-content" class="tab-content active pt-4 space-y-6">
+                        <h2 class="text-xl font-semibold text-gray-700">Finansal Hassasiyet Analizi</h2>
+                        <p class="text-sm text-gray-600">
+                            Bu analiz, farklı piyasa ve saha koşullarına göre projenin maliyet aralığını gösterir. İyimser (minimum), beklenen (orta) ve kötümser (maksimum) senaryolar için yatırım, işletme ve yaşam döngüsü maliyetleri aşağıda özetlenmiştir.
+                        </p>
+                        <div id="financialScenarioTableContainer" class="table-responsive">
+                        </div>
+                    </div>
+
+                    <div id="ozet-content" class="tab-content pt-4">
+                        <h3 class="text-lg font-semibold text-gray-700 mb-4">Proje Özeti <span class="text-base font-medium text-teal-700" id="selectedScenarioTitle"></span></h3>
+                        <h4 class="font-semibold text-gray-700 mb-2">Sistem Boyutlandırma</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+                            <div class="stat-card"><div id="hubCount" class="stat-value text-teal-700"></div><div class="flex items-center justify-center gap-2 stat-label"><i data-lucide="server" class="w-4 h-4"></i><span>Kurulum Hub Sayısı</span></div></div>
+                            <div class="stat-card"><div id="poleCount" class="stat-value text-teal-700"></div><div class="flex items-center justify-center gap-2 stat-label"><i data-lucide="tower-control" class="w-4 h-4"></i><span>Kurulum Direk Sayısı</span></div></div>
+                            <div class="stat-card"><div id="peakPower" class="stat-value text-teal-700"></div><div class="flex items-center justify-center gap-2 stat-label"><i data-lucide="zap" class="w-4 h-4"></i><span>Pik Güç İhtiyacı</span></div></div>
+                            <div class="stat-card"><div id="installationTime" class="stat-value text-teal-700"></div><div class="flex items-center justify-center gap-2 stat-label"><i data-lucide="calendar-days" class="w-4 h-4"></i><span>Tahmini Kurulum Süresi</span></div></div>
+                        </div>
+
+                        <h4 class="font-semibold text-gray-700 mb-2">Maliyet Analizi</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="stat-card bg-red-50"><div id="totalCapex" class="stat-value text-red-800"></div><div class="stat-label">İlk Yatırım (CAPEX)</div></div>
+                            <div class="stat-card bg-amber-50"><div id="totalOpex" class="stat-value text-amber-800"></div><div class="stat-label">Yıllık İşletme (OPEX)</div></div>
+                            <div class="stat-card bg-green-50"><div id="totalLcc" class="stat-value text-green-800"></div><div class="stat-label">Yaşam Döngüsü (LCC)</div></div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div><h4 class="font-semibold text-gray-600 mb-2">CAPEX Dağılımı</h4><div id="capexBreakdown" class="text-sm space-y-2 p-4 bg-gray-50/50 rounded-lg"></div></div>
+                            <div><h4 class="font-semibold text-gray-600 mb-2">OPEX Dağılımı (Yıllık)</h4><div id="opexBreakdown" class="text-sm space-y-2 p-4 bg-gray-50/50 rounded-lg"></div></div>
+                        </div>
+                    </div>
+                    
+                    <div id="gunes-content" class="tab-content pt-4 space-y-6">
+                        <h2 class="text-xl font-semibold text-gray-700">Hektar Başına Güneş Paneli İhtiyacı</h2>
+                        <div id="pvAnalysisHectare" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+                        <h2 class="text-xl font-semibold text-gray-700 mt-6">Toplam Proje Alanı İçin Güneş Paneli İhtiyacı</h2>
+                        <div id="pvAnalysisTotal" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+                        <details class="p-4 bg-gray-50/50 rounded-md text-sm text-gray-600 mt-6">
+                            <summary class="font-semibold text-gray-800">Hesaplama Varsayımları ve Detaylar</summary>
+                            <div id="pvAssumptions" class="mt-4 space-y-2 prose prose-sm"></div>
+                        </details>
+                    </div>
+                    
+                    <div id="senaryo-content" class="tab-content pt-4 space-y-6">
+                         <h2 class="text-xl font-semibold text-gray-700">Farklı Alan Büyüklükleri için Donanım ve Enerji İhtiyaçları</h2>
+                         <p class="text-sm text-gray-600">Seçili model (<strong id="scenarioModelName" class="text-teal-700"></strong>) için hazırlanan bu tablo, farklı büyüklüklerdeki projeler için hızlı bir öngörü sağlar. Yedek parça ihtiyacı da hesaba katılmıştır.</p>
+                         <div id="scenarioTableContainer" class="table-responsive"></div>
+                    </div>
+
+                     <div id="boq-content" class="tab-content pt-4">
+                        <h2 class="text-xl font-semibold text-gray-700 mb-4">Detaylı Malzeme ve İş Listesi (BOQ) - <span class="text-base font-medium text-teal-700" id="selectedScenarioTitleBoq"></span></h2>
+                        <div class="overflow-x-auto rounded-lg border max-h-[600px]">
+                            <table class="w-full text-sm">
+                                <thead id="bomTableHead" class="bg-gray-100 sticky top-0"></thead>
+                                <tbody id="bomTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const scenarios = ["min", "avg", "max"];
+    const scenarioFactors = { min: 0.85, avg: 1.0, max: 1.25 };
+    const hardwareFactor = { min: 0.85, avg: 1.0, max: 1.15 };
+
+    const systemData = {
+        '3-A':{name:"Parklar / Belediyeler",defaults:{poleRadius:50,hubRadius:500,sunHours:4,margin:1.2,autonomy:3,hubDailyWh:432,poleDailyWh:80,Q:20,t:5,S:2,F:1.5,polePeakW:15,hubPeakW:80,installDaysPerHub:1,installDaysPerPole:0.15},variants:{'Ekonomik':{hub:[{item:'Jetson Orin NX 8GB',qty:1,cost:400},{item:'5G Modem',qty:1,cost:150}],pole:[{item:'ESP32-CAM',qty:1,cost:20},{item:'Sensör Kiti',qty:1,cost:30}]},'Denge':{hubDailyWh:450,hub:[{item:'Jetson Orin NX 16GB',qty:1,cost:600},{item:'Starlink Modem',qty:1,cost:500}],pole:[{item:'Raspberry Pi 4',qty:1,cost:75},{item:'Yüksek Çöz. Kamera',qty:1,cost:60}]},'Performans':{hub:[{item:'Jetson AGX Orin',qty:1,cost:2000},{item:'Starlink Premium',qty:1,cost:2500}],pole:[{item:'Raspberry Pi 5',qty:1,cost:100},{item:'Termal Kamera',qty:1,cost:250}]}}},
+        '3-B':{name:"Milli Parklar",defaults:{poleRadius:35,hubRadius:500,sunHours:3.5,margin:1.3,autonomy:5,hubDailyWh:600,poleDailyWh:100,Q:40,t:10,S:4,F:1.8,polePeakW:25,hubPeakW:150,installDaysPerHub:2.5,installDaysPerPole:0.3},variants:{'Ekonomik':{poleConfig:{type:'MLX'},hub:[{item:'Jetson Orin NX 16GB',qty:1,cost:600},{item:'5G Modem',qty:1,cost:150}],pole:[{item:'Raspberry Pi 4',qty:1,cost:75},{item:'Standart Kamera',qty:1,cost:40}]},'Denge':{poleConfig:{type:'Hybrid',criticalRatio:0.375,criticalCost:200},hub:[{item:'Jetson Orin NX 16GB',qty:1,cost:600},{item:'Starlink Modem',qty:1,cost:500}],pole:[{item:'Raspberry Pi 5',qty:1,cost:100},{item:'Yüksek Çöz. Kamera',qty:1,cost:60}]},'Performans':{overrideHubCount:true,hub:[{item:'Jetson AGX Orin',qty:1,cost:2000},{item:'Starlink Premium',qty:1,cost:2500}],pole:[{item:'Raspberry Pi 5',qty:1,cost:100},{item:'Termal + Optik Kamera',qty:1,cost:400}]}}},
+        '4-A':{name:"Kent Ormanı",defaults:{poleRadius:50,hubRadius:500,sunHours:4,margin:1.2,autonomy:3,hubDailyWh:360,poleDailyWh:80,Q:20,t:5,S:2,F:1.5,polePeakW:20,hubPeakW:100,installDaysPerHub:1.5,installDaysPerPole:0.2},variants:{'Ekonomik':{hub:[{item:'Jetson Orin Nano',qty:1,cost:300},{item:'LTE Modem',qty:1,cost:80}],pole:[{item:'ESP32-CAM',qty:1,cost:20},{item:'Sensör Kiti',qty:1,cost:30}]},'Denge':{hasTracker:true,hub:[{item:'Jetson Orin NX 8GB',qty:1,cost:400},{item:'5G Modem',qty:1,cost:150}],pole:[{item:'Raspberry Pi 4',qty:1,cost:75},{item:'Standart Kamera',qty:1,cost:40}]},'Performans':{hasTracker:true,hub:[{item:'Jetson Orin NX 16GB',qty:1,cost:600},{item:'Starlink Modem',qty:1,cost:500}],pole:[{item:'Raspberry Pi 5',qty:1,cost:100},{item:'Yüksek Çöz. Kamera',qty:1,cost:60}]}}},
+        '4-B':{name:"Korular",defaults:{poleRadius:40,hubRadius:500,sunHours:3.5,margin:1.3,autonomy:5,hubDailyWh:480,poleDailyWh:80,Q:30,t:5,S:2,F:1.8,polePeakW:20,hubPeakW:120,installDaysPerHub:2,installDaysPerPole:0.25},variants:{'Ekonomik':{poleConfig:{type:'MLX'},hub:[{item:'Jetson Orin NX 8GB',qty:1,cost:400},{item:'5G Modem',qty:1,cost:150}],pole:[{item:'Raspberry Pi 4',qty:1,cost:75},{item:'Standart Kamera',qty:1,cost:40}]},'Denge':{poleConfig:{type:'Hybrid',criticalRatio:0.3,criticalCost:180},hub:[{item:'Jetson Orin NX 16GB',qty:1,cost:600},{item:'Starlink Modem',qty:1,cost:500}],pole:[{item:'Raspberry Pi 5',qty:1,cost:100},{item:'Yüksek Çöz. Kamera',qty:1,cost:60}]},'Performans':{hubDailyWh:550,poleConfig:{type:'Hybrid',criticalRatio:0.5,criticalCost:220},hub:[{item:'Jetson AGX Orin',qty:1,cost:2000},{item:'Starlink Modem',qty:1,cost:500}],pole:[{item:'Raspberry Pi 5',qty:1,cost:100},{item:'Termal Kamera',qty:1,cost:250}]}}},
+        '5-A':{name:"Küçük Ormanlık Alan",defaults:{poleRadius:45,hubRadius:500,sunHours:3.5,margin:1.25,autonomy:4,hubDailyWh:432,poleDailyWh:80,Q:30,t:5,S:2,F:1.8,polePeakW:20,hubPeakW:100,installDaysPerHub:1.5,installDaysPerPole:0.2},variants:{'Ekonomik':{hub:[{item:'Jetson Orin Nano',qty:1,cost:300},{item:'LTE Modem',qty:1,cost:80}],pole:[{item:'ESP32-CAM',qty:1,cost:20},{item:'Sensör Kiti',qty:1,cost:30}]},'Denge':{poleConfig:{type:'Hybrid',criticalRatio:0.25,criticalCost:150},hub:[{item:'Jetson Orin NX 8GB',qty:1,cost:400},{item:'5G Modem',qty:1,cost:150}],pole:[{item:'Raspberry Pi 4',qty:1,cost:75},{item:'Standart Kamera',qty:1,cost:40}]},'Performans':{hasTracker:true,hub:[{item:'Jetson Orin NX 16GB',qty:1,cost:600},{item:'Starlink Modem',qty:1,cost:500}],pole:[{item:'Raspberry Pi 5',qty:1,cost:100},{item:'Yüksek Çöz. Kamera',qty:1,cost:60}]}}},
+        '5-B':{name:"Büyük Ormanlık Alan",defaults:{poleRadius:30,hubRadius:500,sunHours:3,margin:1.3,autonomy:7,hubDailyWh:600,poleDailyWh:80,Q:40,t:10,S:5,F:2,polePeakW:20,hubPeakW:150,installDaysPerHub:3,installDaysPerPole:0.35},variants:{'Ekonomik':{poleConfig:{type:'MLX'},hub:[{item:'Jetson Orin NX 16GB',qty:1,cost:600},{item:'5G Modem',qty:1,cost:150}],pole:[{item:'Raspberry Pi 4',qty:1,cost:75},{item:'Standart Kamera',qty:1,cost:40}]},'Denge':{autonomy:8,poleConfig:{type:'Hybrid',criticalRatio:0.2,criticalCost:200},hub:[{item:'Jetson Orin NX 16GB',qty:1,cost:600},{item:'Starlink Modem',qty:1,cost:500}],pole:[{item:'Raspberry Pi 5',qty:1,cost:100},{item:'Yüksek Çöz. Kamera',qty:1,cost:60}]},'Performans':{overrideHubCount:true,hubDailyWh:720,poleDailyWh:100,autonomy:10,hub:[{item:'Jetson AGX Orin',qty:1,cost:2000},{item:'Starlink Premium',qty:1,cost:2500}],pole:[{item:'Raspberry Pi 5',qty:1,cost:100},{item:'Termal + Optik Kamera',qty:1,cost:400}]}}}
+    };
+
+    const ui = {};
+    document.querySelectorAll('[id]').forEach(el => ui[el.id] = el);
+
+    function calculate() {
+        const resultsByScenario = {};
+        scenarios.forEach(scenario => {
+            resultsByScenario[scenario] = calculateScenario(scenario);
+        });
+        const selectedScenario = ui.scenarioSelector.value;
+        updateUI(resultsByScenario, selectedScenario);
+    }
+
+    function calculateScenario(scenario) {
+        const inputs = { 
+            areaSize: parseFloat(ui.areaSize.value), areaType: ui.areaType.value, modelVariant: ui.modelVariant.value, terrainDifficulty: parseFloat(ui.terrainDifficulty.value), 
+            sunHours: parseFloat(ui.sunHours.value), powerSource: ui.powerSource.value, distanceToGrid: parseFloat(ui.distanceToGrid.value), gridMaintenanceFee: parseFloat(ui.gridMaintenanceFee.value),
+            costPerKwPv: { min: parseFloat(ui.costPerKwPv_min.value), avg: parseFloat(ui.costPerKwPv_avg.value), max: parseFloat(ui.costPerKwPv_max.value) },
+            costPerAhBattery: { min: parseFloat(ui.costPerAhBattery_min.value), avg: parseFloat(ui.costPerAhBattery_avg.value), max: parseFloat(ui.costPerAhBattery_max.value) },
+            waterSource: ui.waterSource.value, drillingDepth: parseFloat(ui.drillingDepth.value), costPerMeterDrilling: parseFloat(ui.costPerMeterDrilling.value), 
+            costPerTank: parseFloat(ui.costPerTank.value), workerCount: parseInt(ui.workerCount.value), maintenanceWorkerCount: parseInt(ui.maintenanceWorkerCount.value),
+            workerSalary: parseFloat(ui.workerSalary.value), gridTariff: parseFloat(ui.gridTariff.value), dieselPrice: parseFloat(ui.dieselPrice.value), 
+            generatorConsumptionRate: parseFloat(ui.generatorConsumptionRate.value), generatorDailyRuntime: parseFloat(ui.generatorDailyRuntime.value),
+            engineeringPercentage: parseFloat(ui.engineeringPercentage.value)/100, contingencyPercentage: parseFloat(ui.contingencyPercentage.value)/100, maintenancePercentage: parseFloat(ui.maintenancePercentage.value)/100, 
+            projectLifetime: parseInt(ui.projectLifetime.value), discountRate: parseFloat(ui.discountRate.value)/100, usdToTry: parseFloat(ui.usdToTry.value), usdToAzn: parseFloat(ui.usdToAzn.value), 
+            displayCurrency: ui.displayCurrency.value, reserveWaterVolumeL: parseFloat(ui.reserveWaterVolumeL.value)
+        };
+        const model = systemData[inputs.areaType]; const variant = model.variants[inputs.modelVariant]; const params = { ...model.defaults, ...variant };
+
+        const poleArea_ha = Math.PI * Math.pow(params.poleRadius, 2) / 10000;
+        let poleCount = Math.ceil(inputs.areaSize / poleArea_ha * 0.9);
+        const hubArea_ha = Math.PI * Math.pow(params.hubRadius, 2) / 10000;
+        let hubCount = Math.ceil(inputs.areaSize / hubArea_ha);
+        if (params.overrideHubCount) hubCount = Math.max(hubCount, Math.ceil(poleCount / 20));
+        
+        const totalDailyWh = (hubCount * params.hubDailyWh + poleCount * params.poleDailyWh) * params.margin;
+        const peakPowerKw = (hubCount * params.hubPeakW + poleCount * params.polePeakW) / 1000;
+
+        const bom = []; const capex = { hardware: 0, electrical: 0, water: 0, labor: 0, spares: 0 }; const opex = { maintenance: 0, energy: 0, water: 0, fuel: 0, personnel: 0 };
+
+        let workerSalaryUSD = inputs.workerSalary;
+        if (inputs.displayCurrency === 'TRY') { workerSalaryUSD /= inputs.usdToTry; } else if (inputs.displayCurrency === 'AZN') { workerSalaryUSD /= inputs.usdToAzn; }
+        
+        const getHWCost = (baseCost) => baseCost * hardwareFactor[scenario];
+
+        params.hub.forEach(item => { const totalCost = item.qty * hubCount * getHWCost(item.cost); bom.push({ cat: 'Hub Donanım', item: item.item, qty: item.qty*hubCount, unit: 'adet', cost: totalCost }); capex.hardware += totalCost; });
+        const basePoleCost = params.pole.reduce((sum, item) => sum + (item.qty * getHWCost(item.cost)), 0);
+        let standardPoleCount = poleCount, criticalPoleCount = 0, criticalPoleCost = 0;
+        if(params.poleConfig?.type === 'Hybrid'){ 
+            criticalPoleCount = Math.ceil(poleCount * params.poleConfig.criticalRatio); standardPoleCount = poleCount - criticalPoleCount;
+            criticalPoleCost = basePoleCost + getHWCost(params.poleConfig.criticalCost || 0);
+        }
+        if(standardPoleCount > 0){ const totalCost = standardPoleCount * basePoleCost; bom.push({ cat: 'Direk Donanım', item: 'Standart Direk Kiti', qty: standardPoleCount, unit: 'adet', cost: totalCost }); capex.hardware += totalCost; }
+        if(criticalPoleCount > 0){ const totalCost = criticalPoleCount * criticalPoleCost; bom.push({ cat: 'Direk Donanım', item: 'Kritik Direk Kiti', qty: criticalPoleCount, unit: 'adet', cost: totalCost }); capex.hardware += totalCost; }
+
+        const sparePoles = Math.ceil(poleCount * 0.1); const spareHubs = Math.max(1, Math.ceil(hubCount * 0.2));
+        const singleHubCost = params.hub.reduce((sum, item) => sum + (item.qty * getHWCost(item.cost)), 0);
+        const averagePoleCost = poleCount > 0 ? (standardPoleCount * basePoleCost + criticalPoleCount * criticalPoleCost) / poleCount : 0;
+        const sparePoleCost = sparePoles * averagePoleCost; const spareHubCost = spareHubs * singleHubCost;
+        capex.spares = sparePoleCost + spareHubCost;
+        if(sparePoles>0) bom.push({ cat: 'Yedek Donanım', item: 'Yedek Direk Kiti (Ort. Maliyet)', qty: sparePoles, unit: 'adet', cost: sparePoleCost });
+        if(spareHubs>0) bom.push({ cat: 'Yedek Donanım', item: 'Yedek Hub Kiti', qty: spareHubs, unit: 'adet', cost: spareHubCost });
+
+        if (inputs.powerSource === 'pv_battery') {
+            const requiredPvKw = totalDailyWh / (inputs.sunHours * 1000 * 0.8);
+            const batteryWh = totalDailyWh * params.autonomy / 0.9; const batteryAh = batteryWh / 48;
+            capex.electrical = (requiredPvKw * inputs.costPerKwPv[scenario]) + (batteryAh * inputs.costPerAhBattery[scenario]);
+            bom.push({ cat: 'Elektrik', item: 'PV Güneş Paneli Sistemi', qty: requiredPvKw.toFixed(2), unit: 'kWp', cost: requiredPvKw * inputs.costPerKwPv[scenario] });
+            bom.push({ cat: 'Elektrik', item: 'Batarya Depolama (48V)', qty: batteryAh.toFixed(0), unit: 'Ah', cost: batteryAh * inputs.costPerAhBattery[scenario] });
+        } else if (inputs.powerSource === 'grid') {
+            const trafoCost = (peakPowerKw > 20 ? 15000 : 0);
+            capex.electrical = inputs.distanceToGrid * 30000 + trafoCost;
+            bom.push({ cat: 'Elektrik', item: 'OG Şebeke Hattı', qty: inputs.distanceToGrid, unit: 'km', cost: inputs.distanceToGrid * 30000 });
+            if (trafoCost > 0) bom.push({ cat: 'Elektrik', item: 'Trafo ve Ekipmanları', qty: 1, unit: 'adet', cost: trafoCost });
+            opex.energy = ((totalDailyWh / 1000) * inputs.gridTariff * 365 + inputs.gridMaintenanceFee) * scenarioFactors[scenario];
+        } else {
+            const generatorSizeKva = peakPowerKw * 1.25;
+            capex.electrical = generatorSizeKva * 500;
+            bom.push({ cat: 'Elektrik', item: 'Dizel Jeneratör', qty: generatorSizeKva.toFixed(1), unit: 'kVA', cost: capex.electrical });
+            opex.fuel = (generatorSizeKva * inputs.generatorConsumptionRate * inputs.generatorDailyRuntime) * 365 * inputs.dieselPrice * scenarioFactors[scenario];
+        }
+
+        const totalWaterReserveM3 = (poleCount * inputs.reserveWaterVolumeL) / 1000;
+        const currentDrillingCost = inputs.costPerMeterDrilling * scenarioFactors[scenario];
+        const currentTankCost = inputs.costPerTank * scenarioFactors[scenario];
+        if (inputs.waterSource === 'well') {
+            const drillingCost = inputs.drillingDepth * currentDrillingCost;
+            const pumpCost = (500 + (inputs.drillingDepth * 25)) * scenarioFactors[scenario];
+            capex.water = drillingCost + pumpCost + (totalWaterReserveM3 * currentTankCost);
+            bom.push({ cat: 'Su', item: 'Sondaj Kuyusu', qty: inputs.drillingDepth, unit: 'm', cost: drillingCost });
+            bom.push({ cat: 'Su', item: 'Dalgıç Pompa (Tahmini)', qty: 1, unit: 'adet', cost: pumpCost });
+        } else if (inputs.waterSource === 'tanker') {
+            capex.water = totalWaterReserveM3 * currentTankCost;
+            opex.water = (12 * totalWaterReserveM3 * 20) * scenarioFactors[scenario];
+        } else {
+            capex.water = totalWaterReserveM3 * currentTankCost;
+        }
+        if (totalWaterReserveM3 > 0) bom.push({ cat: 'Su', item: 'Su Depolama Tankları', qty: totalWaterReserveM3.toFixed(1), unit: 'm³', cost: totalWaterReserveM3 * currentTankCost });
+
+        const totalManDays = (hubCount * params.installDaysPerHub) + (poleCount * params.installDaysPerPole);
+        const installationDays = Math.ceil(totalManDays / inputs.workerCount * inputs.terrainDifficulty);
+        capex.labor = totalManDays * (workerSalaryUSD / 22) * inputs.terrainDifficulty * scenarioFactors[scenario];
+        bom.push({ cat: 'İşçilik', item: 'Saha Kurulumu (Adam-Gün)', qty: totalManDays.toFixed(0), unit: 'adam-gün', cost: capex.labor });
+        opex.personnel = inputs.maintenanceWorkerCount * workerSalaryUSD * 12 * scenarioFactors[scenario];
+
+        const subTotalCapex = Object.values(capex).reduce((a, b) => a + b, 0);
+        const engineeringCost = subTotalCapex * (inputs.engineeringPercentage * scenarioFactors[scenario]);
+        const contingencyCost = (subTotalCapex + engineeringCost) * (inputs.contingencyPercentage * scenarioFactors[scenario]);
+        const totalCapex = subTotalCapex + engineeringCost + contingencyCost;
+        opex.maintenance = totalCapex * (inputs.maintenancePercentage * scenarioFactors[scenario]);
+        const totalOpex = Object.values(opex).reduce((a, b) => a + b, 0);
+        let presentValueOfOpex = 0;
+        for (let i = 1; i <= inputs.projectLifetime; i++) { presentValueOfOpex += totalOpex / Math.pow(1 + inputs.discountRate, i); }
+        const totalLcc = totalCapex + presentValueOfOpex;
+        
+        const poles_per_ha = (1 / poleArea_ha) * 0.9;
+        const hubs_per_ha = (1 / hubArea_ha);
+        const dailyWh_per_ha = (poles_per_ha * params.poleDailyWh + hubs_per_ha * params.hubDailyWh) * params.margin;
+        const pv_kw_per_ha = dailyWh_per_ha / (inputs.sunHours * 1000 * 0.8);
+        const pvAnalysis = {
+            hectare: { kw: pv_kw_per_ha, count: Math.ceil((pv_kw_per_ha * 1000) / 400), area: Math.ceil((pv_kw_per_ha * 1000) / 400) * 1.9, installCost: (pv_kw_per_ha * inputs.costPerKwPv[scenario]) },
+            total: { kw: pv_kw_per_ha * inputs.areaSize, count: Math.ceil((pv_kw_per_ha * 1000) / 400) * inputs.areaSize, area: Math.ceil((pv_kw_per_ha * 1000) / 400) * 1.9 * inputs.areaSize, installCost: (pv_kw_per_ha * inputs.costPerKwPv[scenario]) * inputs.areaSize }
+        };
+
+        const scenarioAreas = [1, 10, 50, 100, 500, 1000];
+        const scenarioResults = scenarioAreas.map(area => {
+            let s_pole = Math.ceil(area / poleArea_ha * 0.9); let s_hub = Math.ceil(area / hubArea_ha);
+            if(params.overrideHubCount) s_hub = Math.max(s_hub, Math.ceil(s_pole/20));
+            const s_spare_pole = Math.ceil(s_pole * 0.1); const s_spare_hub = Math.max(1, Math.ceil(s_hub * 0.2));
+            const s_daily_wh = (s_hub * params.hubDailyWh + s_pole * params.poleDailyWh) * params.margin;
+            const s_pv_kw = s_daily_wh / (params.sunHours * 1000 * 0.8);
+            return {area, s_pole, s_hub, s_spare_pole, s_spare_hub, s_total_pole: s_pole + s_spare_pole, s_total_hub: s_hub + s_spare_hub, s_daily_wh, s_pv_kw};
+        });
+
+        return { hubCount, poleCount, peakPowerKw, installationDays, totalCapex, totalOpex, totalLcc, capex: {...capex, engineering: engineeringCost, contingency: contingencyCost}, opex, bom, modelName: model.name, pvAnalysis, scenarioResults, rates: { USD: 1, TRY: inputs.usdToTry, AZN: inputs.usdToAzn }, displayCurrency: inputs.displayCurrency };
+    }
+
+
+    function updateUI(resultsByScenario, selectedScenario) {
+        const results = resultsByScenario[selectedScenario];
+        const { rates, displayCurrency, pvAnalysis, scenarioResults } = results;
+        const formatter = (value, currency = displayCurrency) => new Intl.NumberFormat('tr-TR', { style: 'currency', currency: currency, maximumFractionDigits: 0 }).format(value * (rates[currency] || 1));
+        
+        const scenarioText = {avg: "(Orta Senaryo)", min: "(Minimum Senaryo)", max: "(Maksimum Senaryo)"};
+        ui.selectedScenarioTitle.textContent = scenarioText[selectedScenario];
+        ui.selectedScenarioTitleBoq.textContent = scenarioText[selectedScenario];
+
+        ui.hubCount.textContent = results.hubCount; ui.poleCount.textContent = results.poleCount; ui.peakPower.textContent = `${results.peakPowerKw.toFixed(1)} kW`; ui.installationTime.textContent = `~${results.installationDays} gün`;
+        ui.totalCapex.textContent = formatter(results.totalCapex); ui.totalOpex.textContent = formatter(results.totalOpex); ui.totalLcc.textContent = formatter(results.totalLcc);
+        
+        ui.capexBreakdown.innerHTML = `<div class="flex justify-between"><span>Donanım:</span> <span class="font-semibold">${formatter(results.capex.hardware)}</span></div><div class="flex justify-between"><span>Yedek Parça:</span> <span class="font-semibold">${formatter(results.capex.spares)}</span></div><div class="flex justify-between"><span>Elektrik Altyapısı:</span> <span class="font-semibold">${formatter(results.capex.electrical)}</span></div><div class="flex justify-between"><span>Su Altyapısı:</span> <span class="font-semibold">${formatter(results.capex.water)}</span></div><div class="flex justify-between"><span>Kurulum İşçiliği:</span> <span class="font-semibold">${formatter(results.capex.labor)}</span></div><div class="flex justify-between border-t pt-1 mt-1"><span>Mühendislik:</span> <span class="font-semibold">${formatter(results.capex.engineering)}</span></div><div class="flex justify-between"><span>Beklenmedik Gider:</span> <span class="font-semibold">${formatter(results.capex.contingency)}</span></div>`;
+        ui.opexBreakdown.innerHTML = `<div class="flex justify-between"><span>Bakım & Onarım:</span> <span class="font-semibold">${formatter(results.opex.maintenance)}</span></div><div class="flex justify-between"><span>Enerji Gideri:</span> <span class="font-semibold">${formatter(results.opex.energy)}</span></div><div class="flex justify-between"><span>Yakıt Gideri:</span> <span class="font-semibold">${formatter(results.opex.fuel)}</span></div><div class="flex justify-between"><span>Su Gideri:</span> <span class="font-semibold">${formatter(results.opex.water)}</span></div><div class="flex justify-between"><span>Personel Gideri:</span> <span class="font-semibold">${formatter(results.opex.personnel)}</span></div>`;
+
+        let scenarioTableHtml = `<table class="w-full text-sm text-left"><thead class="bg-gray-100"><tr><th class="p-2 font-semibold">Maliyet Kalemi</th><th class="p-2 text-right font-semibold">Minimum (İyimser)</th><th class="p-2 text-right font-semibold">Orta (Beklenen)</th><th class="p-2 text-right font-semibold">Maksimum (Kötümser)</th></tr></thead><tbody>`;
+        [{ label: 'İlk Yatırım (CAPEX)', key: 'totalCapex' },{ label: 'Yıllık İşletme (OPEX)', key: 'totalOpex' },{ label: 'Yaşam Döngüsü (LCC)', key: 'totalLcc' }].forEach(item => {
+            scenarioTableHtml += `<tr class="border-t"><td class="p-2 font-bold">${item.label}</td><td class="p-2 text-right">${formatter(resultsByScenario.min[item.key])}</td><td class="p-2 text-right bg-teal-50/50 font-bold">${formatter(resultsByScenario.avg[item.key])}</td><td class="p-2 text-right">${formatter(resultsByScenario.max[item.key])}</td></tr>`;
+        });
+        ui.financialScenarioTableContainer.innerHTML = scenarioTableHtml + `</tbody></table>`;
+        
+        const createStatCard = (label, value) => `<div class="stat-card bg-gray-50/50"><div class="stat-value text-teal-700">${value}</div><div class="stat-label">${label}</div></div>`;
+        ui.pvAnalysisHectare.innerHTML = createStatCard('PV Gücü (kW/ha)', pvAnalysis.hectare.kw.toFixed(3)) + createStatCard('Panel Sayısı/ha', pvAnalysis.hectare.count) + createStatCard('Panel Alanı (m²/ha)', pvAnalysis.hectare.area.toFixed(1)) + createStatCard('Kurulum Maliyeti/ha', formatter(pvAnalysis.hectare.installCost));
+        ui.pvAnalysisTotal.innerHTML = createStatCard('Toplam PV Gücü (kW)', pvAnalysis.total.kw.toFixed(1)) + createStatCard('Toplam Panel Sayısı', Math.ceil(pvAnalysis.total.count)) + createStatCard('Toplam Panel Alanı (m²)', pvAnalysis.total.area.toFixed(0)) + createStatCard('Toplam Kurulum Maliyeti', formatter(pvAnalysis.total.installCost));
+        ui.pvAssumptions.innerHTML = `<h4>Kullanılan Sabit Varsayımlar:</h4><ul><li><strong>Panel Gücü:</strong> 400 W</li><li><strong>Panel Alanı:</strong> ~1.9 m²/panel</li><li><strong>Sistem Verimi (kayıplar dahil):</strong> 80%</li><li><strong>Kurulu Ortalama Maliyet:</strong> Seçili senaryo değerine göre hesaplanmıştır.</li></ul><p class="mt-4">Bu rakamlar, modeldeki varsayımsal enerji tüketimlerine dayanmaktadır.</p>`;
+        
+        ui.scenarioModelName.textContent = results.modelName;
+        let fieldScenarioHtml = `<table class="w-full text-sm text-left"><thead class="bg-gray-100"><tr><th class="p-2">Alan (ha)</th><th class="p-2 text-right">Direk</th><th class="p-2 text-right">Hub</th><th class="p-2 text-right">Yedek Direk</th><th class="p-2 text-right">Yedek Hub</th><th class="p-2 text-right font-bold">Toplam Direk</th><th class="p-2 text-right font-bold">Toplam Hub</th><th class="p-2 text-right">Günlük Enerji (kWh)</th><th class="p-2 text-right">Gerekli PV (kW)</th></tr></thead><tbody>`;
+        scenarioResults.forEach(s => { fieldScenarioHtml += `<tr class="border-t hover:bg-teal-50"><td class="p-2 font-bold">${s.area}</td><td class="p-2 text-right">${s.s_pole}</td><td class="p-2 text-right">${s.s_hub}</td><td class="p-2 text-right">${s.s_spare_pole}</td><td class="p-2 text-right">${s.s_spare_hub}</td><td class="p-2 text-right font-bold bg-teal-50/50">${s.s_total_pole}</td><td class="p-2 text-right font-bold bg-teal-50/50">${s.s_total_hub}</td><td class="p-2 text-right">${(s.s_daily_wh / 1000).toFixed(1)}</td><td class="p-2 text-right">${s.s_pv_kw.toFixed(2)}</td></tr>`; });
+        ui.scenarioTableContainer.innerHTML = fieldScenarioHtml + `</tbody></table>`;
+
+        ui.bomTableHead.innerHTML = `<tr><th class="p-2 text-left">Kategori</th><th class="p-2 text-left">Kalem</th><th class="p-2 text-right">Miktar</th><th class="p-2 text-left">Birim</th><th class="p-2 text-right">Toplam Maliyet</th></tr>`;
+        ui.bomTableBody.innerHTML = results.bom.sort((a,b) => a.cat.localeCompare(b.cat)).map(row => `<tr class="border-t hover:bg-gray-50"><td class="p-2 font-semibold text-gray-700">${row.cat}</td><td>${row.item}</td><td class="text-right">${row.qty}</td><td>${row.unit}</td><td class="text-right font-medium">${formatter(row.cost)}</td></tr>`).join('');
+    }
+
+    const setupTabs = (tabContainerId) => {
+        const tabContainer = document.getElementById(tabContainerId);
+        if (!tabContainer) return;
+        tabContainer.addEventListener('click', e => {
+            if (e.target.classList.contains('tab')) {
+                tabContainer.querySelector('.tab.active').classList.remove('active'); e.target.classList.add('active');
+                const card = e.target.closest('.card');
+                if (card) {
+                    const activeContent = card.querySelector('.tab-content.active');
+                    if(activeContent) activeContent.classList.remove('active');
+                    const newContent = card.querySelector(`#${e.target.dataset.tab}-content`);
+                    if(newContent) newContent.classList.add('active');
+                }
+            }
+        });
+    };
+
+    function toggleConditionalInputs() {
+        const powerSource = ui.powerSource.value; const waterSource = ui.waterSource.value;
+        ui.distanceToGridContainer.style.display = powerSource === 'grid' ? 'block' : 'none';
+        ui.gridMaintenanceContainer.style.display = powerSource === 'grid' ? 'block' : 'none';
+        document.getElementById('costPerKwPv_min').closest('.col-span-2').style.display = powerSource === 'pv_battery' ? 'block' : 'none';
+        document.getElementById('costPerAhBattery_min').closest('.col-span-2').style.display = powerSource === 'pv_battery' ? 'block' : 'none';
+        ui.generatorConsumptionContainer.style.display = powerSource === 'generator' ? 'block' : 'none';
+        ui.generatorRuntimeContainer.style.display = powerSource === 'generator' ? 'block' : 'none';
+        ui.drillingDepth.closest('.grid > div').style.display = waterSource === 'well' ? 'block' : 'none';
+        ui.costPerMeterDrilling.closest('.grid > div').style.display = waterSource === 'well' ? 'block' : 'none';
+    }
+    
+    document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', calculate));
+    ui.areaSize.addEventListener('input', (e) => { ui.areaValue.textContent = `${e.target.value} ha`; });
+    
+    setupTabs('config-tabs'); setupTabs('results-tabs');
+    ui.powerSource.addEventListener('change', () => { toggleConditionalInputs(); calculate(); });
+    ui.waterSource.addEventListener('change', () => { toggleConditionalInputs(); calculate(); });
+    
+    const tooltipElement = document.getElementById('tooltip');
+    document.querySelectorAll('[data-tooltip]').forEach(element => {
+        element.addEventListener('mouseenter', (e) => { const tooltipText = e.target.getAttribute('data-tooltip'); if (tooltipText) { tooltipElement.textContent = tooltipText; tooltipElement.style.display = 'block'; setTimeout(() => { tooltipElement.style.opacity = '1'; }, 10); } });
+        element.addEventListener('mouseleave', () => { tooltipElement.style.opacity = '0'; setTimeout(() => { tooltipElement.style.display = 'none'; }, 200); });
+        element.addEventListener('mousemove', (e) => { const scrollX = window.pageXOffset || document.documentElement.scrollLeft; const scrollY = window.pageYOffset || document.documentElement.scrollTop; const tooltipHeight = tooltipElement.offsetHeight; const tooltipWidth = tooltipElement.offsetWidth; let top = e.clientY + scrollY - tooltipHeight - 15; let left = e.clientX + scrollX - tooltipWidth / 2; if (e.clientY < tooltipHeight + 25) { top = e.clientY + scrollY + 25; } if (left < scrollX + 10) { left = scrollX + 10; } const viewportWidth = window.innerWidth || document.documentElement.clientWidth; if (left + tooltipWidth > viewportWidth + scrollX - 10) { left = viewportWidth + scrollX - tooltipWidth - 10; } tooltipElement.style.top = `${top}px`; tooltipElement.style.left = `${left}px`; });
+    });
+
+    window.addEventListener('load', () => {
+        ui.areaValue.textContent = `${ui.areaSize.value} ha`;
+        toggleConditionalInputs();
+        calculate();
+        lucide.createIcons();
+    });
+</script>
+</body>
+</html>

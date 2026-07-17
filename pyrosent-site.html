@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pyrosent | Ormanların Akıllı Kalkanı</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        forest: {
+                            500: '#2d6a4f',
+                            700: '#1b4332',
+                            900: '#081c15',
+                        },
+                        alert: {
+                            500: '#f97316',
+                            600: '#ea580c',
+                        },
+                        tech: {
+                            100: '#f3f4f6',
+                            500: '#6b7280',
+                            800: '#1f2937',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        .hero-pattern {
+            background-color: #081c15;
+            background-image: radial-gradient(circle at center, #1b4332 0%, #081c15 100%);
+        }
+    </style>
+</head>
+<body class="font-sans antialiased text-tech-800 bg-tech-100">
+
+    <nav class="fixed w-full z-50 bg-forest-900/90 backdrop-blur-md border-b border-forest-700">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-20">
+                <div class="flex items-center gap-2">
+                    <i data-lucide="flame" class="text-alert-500 h-8 w-8"></i>
+                    <span class="text-2xl font-bold text-white tracking-tight">Pyrosent</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#problem-cozum" class="text-gray-300 hover:text-white transition">Problem & Çözüm</a>
+                    <a href="#nasil-calisir" class="text-gray-300 hover:text-white transition">Nasıl Çalışır?</a>
+                    <a href="#teknoloji" class="text-gray-300 hover:text-white transition">Teknoloji & Ekip</a>
+                    <a href="planlayici.html" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition flex items-center gap-1.5">
+                        Fizibilite Aracı
+                        <i data-lucide="external-link" class="h-3.5 w-3.5"></i>
+                    </a>
+                </div>
+                <div class="hidden md:flex">
+                    <a href="#iletisim" class="bg-alert-500 hover:bg-alert-600 text-white px-6 py-2 rounded-full font-medium transition duration-300 shadow-lg shadow-alert-500/30">
+                        İletişime Geç
+                    </a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-white hover:text-alert-500">
+                        <i data-lucide="menu" class="h-6 w-6"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="mobile-menu" class="hidden md:hidden pb-4 flex flex-col space-y-3">
+                <a href="#problem-cozum" class="text-gray-300 hover:text-white transition">Problem & Çözüm</a>
+                <a href="#nasil-calisir" class="text-gray-300 hover:text-white transition">Nasıl Çalışır?</a>
+                <a href="#teknoloji" class="text-gray-300 hover:text-white transition">Teknoloji & Ekip</a>
+                <a href="planlayici.html" target="_blank" rel="noopener noreferrer" class="text-gray-300 hover:text-white transition flex items-center gap-1.5">
+                    Fizibilite Aracı
+                    <i data-lucide="external-link" class="h-3.5 w-3.5"></i>
+                </a>
+                <a href="#iletisim" class="bg-alert-500 hover:bg-alert-600 text-white px-6 py-2 rounded-full font-medium transition duration-300 inline-block w-fit">
+                    İletişime Geç
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-pattern pt-32 pb-20 md:pt-48 md:pb-32 relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?q=80&w=2572&auto=format&fit=crop')] opacity-10 bg-cover bg-center mix-blend-overlay"></div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-forest-700/50 border border-forest-500 text-alert-500 font-medium text-sm mb-8 backdrop-blur-sm">
+                <i data-lucide="zap" class="h-4 w-4"></i>
+                <span class="text-gray-200">İlk <span class="text-alert-500 font-bold">3 saniyede</span> müdahale</span>
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">
+                Ormanların <br class="hidden md:block" />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-alert-500 to-yellow-400">Akıllı Kalkanı</span>
+            </h1>
+            <p class="mt-4 text-lg md:text-xl text-gray-300 max-w-3xl mx-auto mb-10 leading-relaxed">
+                Yangınları başladığı saniyede tespit eden ve insan onayı beklemeden otonom olarak müdahale eden uçta yapay zeka (Edge AI) destekli aktif koruma sistemi.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#nasil-calisir" class="bg-alert-500 hover:bg-alert-600 text-white px-8 py-4 rounded-full font-semibold text-lg transition duration-300 shadow-xl shadow-alert-500/20 flex items-center justify-center gap-2">
+                    Nasıl Çalışır?
+                    <i data-lucide="arrow-right" class="h-5 w-5"></i>
+                </a>
+                <a href="#iletisim" class="bg-forest-700 hover:bg-forest-500 text-white border border-forest-500 px-8 py-4 rounded-full font-semibold text-lg transition duration-300 flex items-center justify-center">
+                    Teknik Dosya İste
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="problem-cozum" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold text-forest-900 mb-4">Sadece İzlemek Yetersizdir</h2>
+                <p class="text-tech-500 max-w-2xl mx-auto text-lg">Zaman, yangınla mücadelenin en kritik bileşenidir. Pyrosent, tespit ve müdahale arasındaki süreyi sıfıra indirir.</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="bg-tech-100 rounded-3xl p-8 md:p-12 border border-gray-200 shadow-sm relative overflow-hidden group hover:shadow-md transition">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-tech-500"></div>
+                    <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm mb-8 text-tech-500">
+                        <i data-lucide="eye-off" class="h-8 w-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-tech-800 mb-4">Mevcut Durum: Pasif İzleme</h3>
+                    <ul class="space-y-4 text-tech-500">
+                        <li class="flex gap-3">
+                            <i data-lucide="x-circle" class="h-6 w-6 shrink-0 text-red-400"></i>
+                            <span>Kameralar ve uydular sadece izler, müdahale etmez.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <i data-lucide="x-circle" class="h-6 w-6 shrink-0 text-red-400"></i>
+                            <span>İnsan onayı ve itfaiye ekiplerinin ulaşması saatler sürebilir.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <i data-lucide="x-circle" class="h-6 w-6 shrink-0 text-red-400"></i>
+                            <span>Ekipler ulaşana kadar küçük bir kıvılcım büyük bir felakete dönüşür.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-forest-900 rounded-3xl p-8 md:p-12 shadow-xl relative overflow-hidden group hover:-translate-y-1 transition duration-300">
+                    <div class="absolute top-0 left-0 w-2 h-full bg-alert-500"></div>
+                    <div class="w-16 h-16 bg-forest-700 rounded-2xl flex items-center justify-center shadow-inner mb-8 text-alert-500 relative z-10">
+                        <i data-lucide="shield-alert" class="h-8 w-8"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-white mb-4 relative z-10">Pyrosent: Aktif Müdahale</h3>
+                    <ul class="space-y-4 text-gray-300 relative z-10">
+                        <li class="flex gap-3 text-white">
+                            <i data-lucide="check-circle-2" class="h-6 w-6 shrink-0 text-alert-500"></i>
+                            <span>Hem tespit eder hem de fiziksel olarak yangını söndürür.</span>
+                        </li>
+                        <li class="flex gap-3 text-white">
+                            <i data-lucide="check-circle-2" class="h-6 w-6 shrink-0 text-alert-500"></i>
+                            <span>Otonom karar alır, insan onayını beklemeden suyu ateşler.</span>
+                        </li>
+                        <li class="flex gap-3 text-white">
+                            <i data-lucide="check-circle-2" class="h-6 w-6 shrink-0 text-alert-500"></i>
+                            <span>Hedef: Tespit → Müdahale süresini saniyeler seviyesine indirmek.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="nasil-calisir" class="py-24 bg-tech-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="text-3xl md:text-4xl font-bold text-forest-900 mb-4">Uçtan Uca Otonom Akış</h2>
+                <p class="text-tech-500 max-w-2xl mx-auto text-lg">Pyrosent, tespit mekanizmasıyla söndürme eylemini tek bir döngüde birleştirir.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8 relative">
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gradient-to-r from-forest-500 via-alert-500 to-blue-500 -z-0 -translate-y-12 opacity-30"></div>
+
+                <div class="relative z-10 flex flex-col items-center text-center">
+                    <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-xl border-4 border-tech-100 mb-6 text-forest-500">
+                        <i data-lucide="scan" class="h-10 w-10"></i>
+                    </div>
+                    <span class="text-sm font-bold text-alert-500 tracking-wider uppercase mb-2">01. Tespit</span>
+                    <h4 class="text-xl font-bold text-tech-800 mb-3">Termal Algılama</h4>
+                    <p class="text-tech-500 px-4">Yüksek çözünürlüklü (640x512) termal sensörler, ormanlık alanı sürekli tarayarak en ufak ısı değişimini milisaniyeler içinde tespit eder.</p>
+                </div>
+
+                <div class="relative z-10 flex flex-col items-center text-center mt-12 md:mt-0">
+                    <div class="w-24 h-24 bg-forest-900 rounded-full flex items-center justify-center shadow-xl border-4 border-tech-100 mb-6 text-white">
+                        <i data-lucide="cpu" class="h-10 w-10 text-alert-500"></i>
+                    </div>
+                    <span class="text-sm font-bold text-alert-500 tracking-wider uppercase mb-2">02. Karar</span>
+                    <h4 class="text-xl font-bold text-tech-800 mb-3">Edge AI Doğrulaması</h4>
+                    <p class="text-tech-500 px-4">Donanım üzerindeki yapay zeka (Edge AI), sahte alarmları filtreleyerek 500ms'den kısa sürede yangın kararını kesinleştirir.</p>
+                </div>
+
+                <div class="relative z-10 flex flex-col items-center text-center mt-12 md:mt-0">
+                    <div class="w-24 h-24 bg-alert-500 rounded-full flex items-center justify-center shadow-xl border-4 border-tech-100 mb-6 text-white">
+                        <i data-lucide="droplets" class="h-10 w-10"></i>
+                    </div>
+                    <span class="text-sm font-bold text-alert-500 tracking-wider uppercase mb-2">03. Müdahale</span>
+                    <h4 class="text-xl font-bold text-tech-800 mb-3">Aktif Söndürme</h4>
+                    <p class="text-tech-500 px-4">Motorlu döner sistem (nozul) devreye girer. Yerel su rezervi kullanılarak alevlerin üzerine doğrudan fiziksel müdahale başlatılır.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="teknoloji" class="py-24 bg-white relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold text-forest-900 mb-6">Şebekeden Bağımsız,<br/>Sahaya Hazır Altyapı</h2>
+                    <p class="text-tech-500 text-lg mb-8">
+                        Zorlu arazi şartlarında, elektriğin veya şehir suyunun olmadığı noktalarda dahi çalışacak şekilde tasarlanan mimarimiz; tamamen kendi kendine yeten, sürdürülebilir bir orman güvenliği sağlar.
+                    </p>
+                    
+                    <div class="space-y-6">
+                        <div class="flex gap-4 items-start">
+                            <div class="w-12 h-12 rounded-lg bg-tech-100 flex items-center justify-center text-forest-700 shrink-0">
+                                <i data-lucide="sun" class="h-6 w-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-tech-800">Off-Grid Güç Yönetimi</h4>
+                                <p class="text-tech-500 text-sm mt-1">Solar paneller ve gelişmiş batarya sistemleri ile elektrik şebekesinden tamamen bağımsız kesintisiz operasyon.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-start">
+                            <div class="w-12 h-12 rounded-lg bg-tech-100 flex items-center justify-center text-alert-600 shrink-0">
+                                <i data-lucide="map-pin" class="h-6 w-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-tech-800">Veriye Dayalı Konumlandırma</h4>
+                                <p class="text-tech-500 text-sm mt-1">Bölgesel risk haritaları kullanılarak CAPEX/OPEX optimizasyonu sağlayan akıllı dağıtım modeli.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-start">
+                            <div class="w-12 h-12 rounded-lg bg-tech-100 flex items-center justify-center text-forest-700 shrink-0">
+                                <i data-lucide="wifi" class="h-6 w-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-tech-800">Bağlantı Esnekliği</h4>
+                                <p class="text-tech-500 text-sm mt-1">Şehir altyapısından uzak, sinyal erişiminin sınırlı olduğu bölgelerde dahi çalışabilecek şekilde tasarlanan iletişim mimarisi.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-start">
+                            <div class="w-12 h-12 rounded-lg bg-tech-100 flex items-center justify-center text-alert-600 shrink-0">
+                                <i data-lucide="layers" class="h-6 w-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-tech-800">Modüler ve Ölçeklenebilir Tasarım</h4>
+                                <p class="text-tech-500 text-sm mt-1">Birim başına kolay çoğaltılabilen mimari sayesinde küçük bir pilot bölgeden geniş orman alanlarına aşamalı yaygınlaştırma imkânı.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-start">
+                            <div class="w-12 h-12 rounded-lg bg-tech-100 flex items-center justify-center text-forest-700 shrink-0">
+                                <i data-lucide="wrench" class="h-6 w-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-tech-800">Düşük Bakım İhtiyacı</h4>
+                                <p class="text-tech-500 text-sm mt-1">Zor erişilen arazi koşullarını hesaba katan sağlam gövde ve uzun ömürlü bileşenlerle minimum saha müdahalesi hedeflenir.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4 items-start">
+                            <div class="w-12 h-12 rounded-lg bg-tech-100 flex items-center justify-center text-alert-600 shrink-0">
+                                <i data-lucide="monitor-smartphone" class="h-6 w-6"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-tech-800">Uzaktan İzleme Paneli</h4>
+                                <p class="text-tech-500 text-sm mt-1">Sahadaki her birimin durumunu tek bir kontrol panelinden takip edip yönetebilme hedefiyle tasarlanan yazılım altyapısı.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-forest-900 rounded-3xl p-8 shadow-2xl">
+                    <h3 class="text-2xl font-bold text-white mb-8 border-b border-forest-700 pb-4">Teknik Yönetim Ekibi</h3>
+                    <div class="space-y-6">
+                        <div class="bg-forest-800/50 p-5 rounded-2xl border border-forest-700">
+                            <div class="flex items-center gap-5 mb-3">
+                                <div class="w-16 h-16 rounded-full bg-forest-700 flex items-center justify-center text-gray-300 shrink-0">
+                                    <i data-lucide="radar" class="h-8 w-8"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white">Nariman Rzayev</h4>
+                                    <p class="text-alert-500 text-sm">Saha Operasyonları & Edge AI</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-400 text-sm leading-relaxed">
+                                Gebze Teknik Üniversitesi Elektronik Mühendisliği son sınıf öğrencisi. "Smart Pole System" gibi orman yangınlarıyla mücadeleye yönelik IoT tabanlı projelerin geliştiricisi ve AZSONTECH'in kurucusu. İKA projesinde sistem mimarisini ve ESP32 tabanlı gerçek zamanlı firmware altyapısını kurmuş, SAGE bünyesindeki çalışmalarında YOLOv7 tabanlı hedef tespit modellerini optimize etmiştir. Pyrosent'te saha operasyonlarını ve Edge AI modellerinin sahada gerçek zamanlı doğrulanma süreçlerini yönetmektedir.
+                            </p>
+                        </div>
+                        <div class="bg-forest-800/50 p-5 rounded-2xl border border-forest-700">
+                            <div class="flex items-center gap-5 mb-3">
+                                <div class="w-16 h-16 rounded-full bg-forest-700 flex items-center justify-center text-gray-300 shrink-0">
+                                    <i data-lucide="cpu" class="h-8 w-8"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-lg font-bold text-white">Mustafa Kürşat Ahıshalı</h4>
+                                    <p class="text-alert-500 text-sm">Donanım & Entegrasyon</p>
+                                </div>
+                            </div>
+                            <p class="text-gray-400 text-sm leading-relaxed">
+                                Gebze Teknik Üniversitesi Elektronik Mühendisliği öğrencisi. Teknolojiyle toplumsal faydayı birleştiren projelere ilgi duyuyor; eğitimi boyunca geliştirdiği senaryo bazlı problem çözme yaklaşımını hem analitik hem de yaratıcı çözümler üretmek için kullanıyor. İlgi alanları arasında sürdürülebilir enerji, elektronik sistemler ve yenilikçi teknolojilerin sosyal etki yaratacak şekilde kullanılması yer alıyor. Pyrosent ekibinde donanım entegrasyonu ve sistemin sahaya hazır hale getirilmesi süreçlerinde yer almaktadır.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <footer id="iletisim" class="bg-tech-800 pt-20 pb-10 border-t-4 border-alert-500 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 mb-16">
+                <div>
+                    <div class="flex items-center gap-2 mb-6">
+                        <i data-lucide="flame" class="text-alert-500 h-8 w-8"></i>
+                        <span class="text-3xl font-bold text-white tracking-tight">Pyrosent</span>
+                    </div>
+                    <p class="text-gray-400 text-lg max-w-md mb-8">
+                        İklim teknolojilerine yatırım yapmak veya sistem demosu talep etmek için bizimle iletişime geçin.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-2xl p-8 shadow-xl">
+                    <h3 class="text-2xl font-bold text-tech-800 mb-6">İş Birliği İçin Bize Ulaşın</h3>
+                    
+                    <div id="form-status" class="hidden mb-4 p-4 rounded-lg text-sm font-medium"></div>
+
+                    <form id="contact-form" class="space-y-4">
+                        <input type="hidden" name="access_key" value="e5115ca7-ed52-4ff3-a1ae-893364a14aaf">
+                        <input type="hidden" name="subject" value="Pyrosent Web Sitesi - Yeni İletişim Mesajı">
+                        <input type="checkbox" name="botcheck" class="hidden" style="display:none">
+
+                        <div>
+                            <label class="block text-sm font-medium text-tech-500 mb-1">Ad Soyad / Kurum Adı</label>
+                            <input id="form-name" name="name" type="text" required class="w-full px-4 py-3 rounded-lg bg-tech-100 border border-transparent outline-none transition" placeholder="Kurum veya Adınız">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-tech-500 mb-1">E-Posta Adresi</label>
+                            <input id="form-email" name="email" type="email" required class="w-full px-4 py-3 rounded-lg bg-tech-100 border border-transparent outline-none transition" placeholder="ornek@sirket.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-tech-500 mb-1">Mesajınız</label>
+                            <textarea id="form-message" name="message" rows="3" required class="w-full px-4 py-3 rounded-lg bg-tech-100 border border-transparent outline-none transition" placeholder="Nasıl bir iş birliği planlıyorsunuz?"></textarea>
+                        </div>
+                        <button type="submit" id="submit-btn" class="w-full bg-forest-900 hover:bg-forest-700 text-white font-bold py-3 rounded-lg transition duration-300 flex justify-center items-center">
+                            Gönder
+                        </button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="border-t border-tech-500/30 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm">
+                    &copy; 2026 Pyrosent - Akıllı Yangın Tespit ve Müdahale Sistemleri.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        // Mobil Menü
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        if(mobileMenuBtn && mobileMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // Web3Forms ile Gerçek Mail Gönderimi
+        const contactForm = document.getElementById('contact-form');
+        const statusBox = document.getElementById('form-status');
+        const submitBtn = document.getElementById('submit-btn');
+
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            submitBtn.disabled = true;
+            submitBtn.innerText = 'Gönderiliyor...';
+
+            const formData = new FormData(contactForm);
+            const object = Object.fromEntries(formData);
+            const json = JSON.stringify(object);
+
+            try {
+                const response = await fetch('https://api.web3forms.com/submit', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: json
+                });
+
+                const result = await response.json();
+
+                if (response.status === 200) {
+                    statusBox.className = "mb-4 p-4 rounded-lg text-sm font-medium bg-green-100 text-green-800";
+                    statusBox.innerText = "Mesajınız başarıyla iletildi! En kısa sürede size dönüş yapacağız.";
+                    contactForm.reset();
+                } else {
+                    console.log(result);
+                    statusBox.className = "mb-4 p-4 rounded-lg text-sm font-medium bg-red-100 text-red-800";
+                    statusBox.innerText = "Bir hata oluştu, lütfen tekrar deneyin.";
+                }
+            } catch (error) {
+                console.log(error);
+                statusBox.className = "mb-4 p-4 rounded-lg text-sm font-medium bg-red-100 text-red-800";
+                statusBox.innerText = "Bağlantı hatası, lütfen internetinizi kontrol edip tekrar deneyin.";
+            }
+
+            statusBox.classList.remove('hidden');
+            submitBtn.disabled = false;
+            submitBtn.innerText = 'Gönder';
+        });
+    </script>
+</body>
+</html>
